@@ -32,6 +32,7 @@ module Wego
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.autoload_paths +=%W(#{config.root}/lib/)
+    config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 3.hours }
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
