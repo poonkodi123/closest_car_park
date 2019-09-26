@@ -49,7 +49,7 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
-
+  config.cache_store = :readthis_store, { expires_in: 1.hour.to_i, namespace: 'wego', redis: { host: 'redis://192.168.0.10:6379/0', port: 6379, db: 0 }, driver: :hiredis }
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "wego_#{Rails.env}"

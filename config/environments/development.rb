@@ -11,21 +11,15 @@ Rails.application.configure do
 
   # Show full error reports.
   config.consider_all_requests_local = true
+  config.action_controller.perform_caching = true
+  # config.cache_store = :readthis_store, { expires_in: 1.hour.to_i, namespace: 'wego', redis: { host: 'redis://192.168.0.10:6379/0', port: 6379, db: 0 }, driver: :hiredis }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
 
-    config.cache_store = :memory_store
-    config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
-    }
-  else
-    config.action_controller.perform_caching = false
+#    config.cache_store = :null_store
 
-    config.cache_store = :null_store
-  end
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local
