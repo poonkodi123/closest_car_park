@@ -1,18 +1,23 @@
-FROM ruby:2.6
-RUN apt-get update -qq && apt-get install -y \
-    build-essential libpq-dev apt-transport-https
+FROM ruby:2.3-alpine
 
-# node
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-    && apt-get install -y nodejs
+RUN apk --update --no-cache add build-base less && mkdir -p /app
 
-# yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update && apt-get install -y yarn
+RUN apk add --update --no-cache \
+    libgcc libstdc++ libx11 glib libxrender libxext libintl libpq postgresql-dev \
+    ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family postgresql-client
 
-RUN mkdir /wego
-WORKDIR /wego
-ADD Gemfile /wego/Gemfile
-ADD Gemfile.lock /wego/Gemfile.lock
-ADD . /wego
+# compiled from: https://github.com/alloylab/Docker-Alpine-wkhtmltopdf
+# on alpine static compiled patched qt headless wkhtmltopdf (47.2 MB)
+# compilation takes 4 hours on EC2 m1.large in 2016 thats why binary
+
+WORKDIR /app
+
+COPY Gemfile Gemfile.lock ./
+
+COPY ./vendor/ ./vendor/
+
+RUN bundle install
+
+COPY . ./
+
+CMD ["script/docker-entrypoint.sh"]
